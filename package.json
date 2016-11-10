@@ -1,0 +1,16 @@
+{
+  "name": "sidekick",
+  "version": "1.0.0",
+  "description": "Example project using Talkify.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Manthan Dave <manthanhd@live.com> (https://www.manthanhd.com)",
+  "license": "MIT",
+  "dependencies": {
+    "chuck-norris-api": "^1.0.8",
+    "knock-knock-jokes": "^1.7.0",
+    "talkify": "^2.0.0"
+  }
+}
