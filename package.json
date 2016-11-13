@@ -11,6 +11,6 @@
   "dependencies": {
     "chuck-norris-api": "^1.0.8",
     "knock-knock-jokes": "^1.7.0",
-    "talkify": "^2.0.0"
+    "talkify": "^2.0.1"
   }
 }
