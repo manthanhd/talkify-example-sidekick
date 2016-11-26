@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
 const app = express();
+const bot = require('./index');
 
 app.set('port', (process.env.PORT || 80));
 
@@ -32,17 +33,19 @@ app.post('/webhook/', function (req, res) {
         let sender = event.sender.id;
         if (event.message && event.message.text) {
             let text = event.message.text;
-            if (text === 'Generic') {
-                sendGenericMessage(sender);
-                continue
-            }
-            sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
+            return bot.resolve(sender, text, function(err, messages) {
+                return messages.forEach(function(message) {
+                    if(message.content instanceof Array) {
+                        return message.content.forEach(function(line) {
+                            return sendTextMessage(sender, line);
+                        });
+                    }
+
+                    return sendTextMessage(sender, message.content);
+                });
+            });
         }
-        if (event.postback) {
-            let text = JSON.stringify(event.postback);
-            sendTextMessage(sender, "Postback received: "+text.substring(0, 200), token);
-            continue;
-        }
+        return sendTextMessage(sender, "I don't get it. Is this some kind of joke?");
     }
     res.sendStatus(200);
 });
