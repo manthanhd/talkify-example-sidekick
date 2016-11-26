@@ -19,7 +19,7 @@ app.get('/', function (req, res) {
 
 // for facebook verification
 app.get('/webhook/', function (req, res) {
-    if (req.query['hub.verify_token'] === 'some_messenger_verify_token') {
+    if (req.query['hub.verify_token'] === 'challenge') {
         return res.send(req.query['hub.challenge'])
     }
     return res.send('Error, wrong token')
@@ -35,11 +35,11 @@ app.post('/webhook/', function (req, res) {
             let text = event.message.text;
             return bot.resolve(sender, text, function(err, messages) {
                 return messages.forEach(function(message) {
-                    if(message.content instanceof Array) {
-                        return message.content.forEach(function(line) {
-                            return sendTextMessage(sender, line);
-                        });
-                    }
+                    // if(message.content instanceof Array) {
+                    //     return message.content.forEach(function(line) {
+                    //         return sendTextMessage(sender, line);
+                    //     });
+                    // }
 
                     return sendTextMessage(sender, message.content);
                 });
@@ -53,7 +53,7 @@ app.post('/webhook/', function (req, res) {
 
 // recommended to inject access tokens as environmental variables, e.g.
 // const token = process.env.PAGE_ACCESS_TOKEN
-const token = "<PAGE_ACCESS_TOKEN>";
+const token = "<PAGE ACCESS TOKEN>";
 
 function sendTextMessage(sender, text) {
     let messageData = { text:text };
