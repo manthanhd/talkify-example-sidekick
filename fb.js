@@ -19,7 +19,7 @@ app.get('/', function (req, res) {
 
 // for facebook verification
 app.get('/webhook/', function (req, res) {
-    if (req.query['hub.verify_token'] === 'challenge') {
+    if (req.query['hub.verify_token'] === 'verify_token') {
         return res.send(req.query['hub.challenge'])
     }
     return res.send('Error, wrong token')
@@ -27,33 +27,33 @@ app.get('/webhook/', function (req, res) {
 
 // to post data
 app.post('/webhook/', function (req, res) {
-    let messaging_events = req.body.entry[0].messaging;
-    for (let i = 0; i < messaging_events.length; i++) {
-        let event = req.body.entry[0].messaging[i];
-        let sender = event.sender.id;
-        if (event.message && event.message.text) {
-            let text = event.message.text;
-            return bot.resolve(sender, text, function(err, messages) {
-                return messages.forEach(function(message) {
-                    // if(message.content instanceof Array) {
-                    //     return message.content.forEach(function(line) {
-                    //         return sendTextMessage(sender, line);
-                    //     });
-                    // }
-
-                    return sendTextMessage(sender, message.content);
-                });
-            });
-        }
-        return sendTextMessage(sender, "I don't get it. Is this some kind of joke?");
+    let data = req.body;
+    if(data.object !== 'page') {
+        return;
     }
-    res.sendStatus(200);
+
+    let pageEntry = data.entry;
+
+    res.send();
+    return pageEntry.forEach(function(entry) {
+        return entry.messaging.forEach(function(event) {
+            let sender = event.sender.id;
+            if (event.message && event.message.text) {
+                let text = event.message.text;
+                return bot.resolve(sender, text, function(err, messages) {
+                    return messages.forEach(function(message) {
+                        return sendTextMessage(sender, message.content);
+                    });
+                });
+            }
+        });
+    });
 });
 
 
 // recommended to inject access tokens as environmental variables, e.g.
 // const token = process.env.PAGE_ACCESS_TOKEN
-const token = "<PAGE ACCESS TOKEN>";
+const token = "<PAGE_ACCESS_TOKEN>";
 
 function sendTextMessage(sender, text) {
     let messageData = { text:text };
